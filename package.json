@@ -7,7 +7,7 @@
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
     "test": "mocha -r ts-node/register src/test/**/*.ts",
-    "release": "np"
+    "release": "npm run build && np"
   },
   "pre-commit": [
     "lint",
@@ -32,10 +32,10 @@
     "@types/jsonwebtoken": "^8.3.2",
     "jsonwebtoken": "^8.5.1",
     "ow": "^0.12.0",
-    "typescript": "^3.4.3",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "typescript": "^3.4.3",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.6",
