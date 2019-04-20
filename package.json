@@ -1,8 +1,8 @@
 {
   "name": "rauth",
   "version": "1.0.0-alfa.2",
-  "description": "Session control",
-  "private": true,
+  "description": "Make your service of the authentication with RAuth library.",
+  "private": false,
   "scripts": {
     "buid": "tsc",
     "lint": "tslint --project tsconfig.json",
@@ -17,7 +17,11 @@
     "type": "git",
     "url": "git+https://github.com/reigndesign/RAuth.git"
   },
-  "keywords": [],
+  "keywords": [
+    "auth",
+    "reign",
+    "session control"
+  ],
   "author": "Reign (https://www.reigndesign.com/)",
   "license": "UNLICENSED",
   "bugs": {
