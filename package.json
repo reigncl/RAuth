@@ -4,7 +4,7 @@
   "description": "Make your service of the authentication with RAuth library.",
   "private": false,
   "scripts": {
-    "buid": "tsc",
+    "build": "tsc",
     "lint": "tslint --project tsconfig.json",
     "test": "mocha -r ts-node/register src/test/**/*.ts",
     "release": "np"
