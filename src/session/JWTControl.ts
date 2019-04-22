@@ -43,23 +43,39 @@ export interface TokenDecoded {
   userId: UserID;
 }
 
+interface JWTControlOption {
+  readonly signOptions?: SignOptions;
+  readonly verifyOptions?: VerifyOptions;
+  readonly secretOrPrivateKey?: Secret;
+  readonly secretOrPublicKey?: string | Buffer;
+}
+
 export class JWTControl {
   readonly signOptions: SignOptions;
   readonly verifyOptions: VerifyOptions;
   readonly secretOrPrivateKey: Secret;
   readonly secretOrPublicKey: string | Buffer;
 
-  constructor() {
+  constructor({
+    signOptions = {},
+    verifyOptions = {},
+    secretOrPrivateKey = undefined,
+    secretOrPublicKey = undefined,
+  }: JWTControlOption = {}) {
     this.signOptions = {
       algorithm: 'RS512',
+      ...signOptions,
     };
 
     this.verifyOptions = {
       algorithms: ['RS512'],
+      ...verifyOptions,
     };
 
-    this.secretOrPrivateKey = checkWarningPrivateKeyVulnerable(defaultPrivateKeyRS512);
-    this.secretOrPublicKey = checkWarningPublicKeyVulnerable(defaultPublicKeyRS512);
+    this.secretOrPrivateKey = secretOrPrivateKey
+      || checkWarningPrivateKeyVulnerable(defaultPrivateKeyRS512);
+    this.secretOrPublicKey = secretOrPublicKey
+      || checkWarningPublicKeyVulnerable(defaultPublicKeyRS512);
   }
 
   sign(payload: string | Buffer | object, options?: SignOptions) {
