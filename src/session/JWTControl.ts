@@ -44,10 +44,11 @@ export interface TokenDecoded {
 }
 
 interface JWTControlOption {
-  readonly signOptions?: SignOptions;
-  readonly verifyOptions?: VerifyOptions;
-  readonly secretOrPrivateKey?: Secret;
-  readonly secretOrPublicKey?: string | Buffer;
+  signOptions?: SignOptions;
+  verifyOptions?: VerifyOptions;
+  secret?: string | Buffer;
+  secretOrPrivateKey?: Secret;
+  secretOrPublicKey?: string | Buffer;
 }
 
 export class JWTControl {
@@ -59,9 +60,13 @@ export class JWTControl {
   constructor({
     signOptions = {},
     verifyOptions = {},
-    secretOrPrivateKey = undefined,
-    secretOrPublicKey = undefined,
+    secret = undefined,
+    secretOrPrivateKey: optSecretOrPrivateKey = undefined,
+    secretOrPublicKey: optSecretOrPublicKey = undefined,
   }: JWTControlOption = {}) {
+    const secretOrPrivateKey = secret || optSecretOrPrivateKey;
+    const secretOrPublicKey = secret || optSecretOrPublicKey;
+
     this.signOptions = {
       algorithm: 'RS512',
       ...signOptions,
