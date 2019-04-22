@@ -7,7 +7,8 @@
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
     "test": "mocha -r ts-node/register src/test/**/*.ts",
-    "release": "npm run build && np"
+    "release": "np",
+    "version": "tsc"
   },
   "pre-commit": [
     "lint",
@@ -43,7 +44,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^6.1.4",
-    "np": "^5.0.0",
+    "np": "*",
     "pre-commit": "^1.2.2",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
