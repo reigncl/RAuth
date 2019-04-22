@@ -4,9 +4,15 @@ import { ConnectionStore } from '../store/ConnectionStore';
 import uuid from 'uuid';
 import { RAuthError } from '../util/Error';
 
+declare global {
+  interface EngineNames {
+    '<<NO_SET>>': string;
+  }
+}
+
 interface SessionControlOptions {
   jwtControl?: JWTControl;
-  engineConnectionStore?: string;
+  engineConnectionStore?: keyof EngineNames;
   connectionStore?: ConnectionStore;
   [otherOpt: string]: any;
 }

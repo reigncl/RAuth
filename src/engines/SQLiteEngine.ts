@@ -18,6 +18,12 @@ interface RegisterRow {
   refreshAt: string;
 }
 
+declare global {
+  interface EngineNames {
+    'SQLite': string;
+  }
+}
+
 export class SQLiteEngine implements Engine {
   sqlite: Promise<Database>;
   table: string;
