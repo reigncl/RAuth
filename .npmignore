@@ -1,4 +1,5 @@
 !dist
+!index.*
 .vscode
 src
 tsconfig.json

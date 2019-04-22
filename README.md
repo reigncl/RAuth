@@ -59,9 +59,7 @@ This handler allow revoke a refresh token, to invalidate the next use of refresh
 
 ```ts
 // Handler to GET /logout
-const refreshToken = query.refresh_token;
-
-const session = await sessionControl.refreshSession(refreshToken);
+await sessionControl.revokeSession(session);
 
 res.setHeader('Content-Type', 'application/json');
 return res.end(JSON.stringify(session), 'utf8');
