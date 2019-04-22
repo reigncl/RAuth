@@ -1,4 +1,5 @@
 import os from 'os';
+// @ts-ignore
 import { Database, open } from 'sqlite';
 import { StrictSessionRegister } from '../session/Session';
 import { ConnectionStore } from '../store/ConnectionStore';
