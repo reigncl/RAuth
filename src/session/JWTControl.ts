@@ -44,6 +44,17 @@ export interface TokenDecoded {
 }
 
 interface JWTControlOption {
+  algorithm?: 'HS256'
+    | 'HS384'
+    | 'HS512'
+    | 'RS256'
+    | 'RS384'
+    | 'RS512'
+    | 'ES256'
+    | 'ES384'
+    | 'ES512'
+    | 'PS256'
+    | 'PS384';
   signOptions?: SignOptions;
   verifyOptions?: VerifyOptions;
   secret?: string | Buffer;
@@ -58,6 +69,7 @@ export class JWTControl {
   readonly secretOrPublicKey: string | Buffer;
 
   constructor({
+    algorithm = 'RS512',
     signOptions = {},
     verifyOptions = {},
     secret = undefined,
@@ -68,12 +80,12 @@ export class JWTControl {
     const secretOrPublicKey = secret || optSecretOrPublicKey;
 
     this.signOptions = {
-      algorithm: 'RS512',
+      algorithm,
       ...signOptions,
     };
 
     this.verifyOptions = {
-      algorithms: ['RS512'],
+      algorithms: [algorithm],
       ...verifyOptions,
     };
 
