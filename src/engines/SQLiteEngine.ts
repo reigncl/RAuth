@@ -29,7 +29,7 @@ export class SQLiteEngine implements Engine {
       promise: Promise,
       cached: true,
     })
-      .then(async (db) => {
+      .then(async (db: any) => {
         await db.run(`CREATE TABLE IF NOT EXISTS ${this.table} (
           id INT PRIMARY KEY,
           sessionId TEXT UNIQUE,
