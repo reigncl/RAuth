@@ -63,6 +63,8 @@
     "src/**/*"
   ],
   "exclude": [
+    "src/test",
+    "src/sample",
     "node_modules",
     "**/*.spec.ts"
   ]

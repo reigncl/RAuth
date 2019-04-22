@@ -1,1 +1,5 @@
 !dist
+.vscode
+src
+tsconfig.json
+tslint.json
