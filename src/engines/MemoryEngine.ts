@@ -13,7 +13,7 @@ declare global {
 export class MemoryEngine implements Engine {
   private memory: Map<string, Register>;
 
-  constructor() {
+  constructor(option?: any) {
     this.memory = new Map();
   }
 
@@ -37,8 +37,11 @@ export class MemoryEngine implements Engine {
   }
 
   async create(sessionRegister: StrictSessionRegister): Promise<Register> {
-    const sessionId = uuid();
-    this.memory.set(sessionId, sessionRegister);
+    const sessionId = sessionRegister.sessionId || uuid();
+    this.memory.set(sessionId, {
+      sessionId,
+      ...sessionRegister,
+    });
     return <Register>this.memory.get(sessionId);
   }
 }
