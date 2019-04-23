@@ -12,4 +12,5 @@ export declare class Engine {
   update(register: Register, sets: any): Promise<Register>;
   findById(sessionId: string): Promise<Register>;
   create(sessionRegister: StrictSessionRegister): Promise<Register>;
+  [property: string]: any;
 }

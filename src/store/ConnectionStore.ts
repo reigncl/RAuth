@@ -1,12 +1,18 @@
 import { RAuthError } from '../util/Error';
 import { Engine, EngineOptions } from './Engine';
 
-const engines: { [nameEngine: string]: typeof Engine | undefined } = {};
+declare global {
+  interface EngineNames {
+    '<<NO_SET>>': null;
+  }
+}
+
+const engines: EngineNames = <EngineNames>{};
 
 export class ConnectionStore {
-  private engine: Engine;
+  readonly engine: Engine;
 
-  constructor(nameEngine: string, engineOptions?: EngineOptions) {
+  constructor(nameEngine: keyof EngineNames, engineOptions?: EngineOptions) {
     const engineFound = engines[nameEngine];
 
     if (!engineFound) { throw new RAuthError(`Your engine "${nameEngine}" not found.`); }
@@ -14,8 +20,8 @@ export class ConnectionStore {
     this.engine = new engineFound(engineOptions);
   }
 
-  static add(engineName: string, engine: typeof Engine) {
-    engines[engineName] = engine;
+  static add(engineName: keyof EngineNames, engine: typeof Engine) {
+    engines[engineName] = <any>engine;
   }
 
   get deleteById() { return this.engine.deleteById.bind(this.engine); }

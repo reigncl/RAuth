@@ -3,12 +3,7 @@ import { AccessToken, Session, UserID, Data, RefreshToken, Scope } from './Sessi
 import { ConnectionStore } from '../store/ConnectionStore';
 import uuid from 'uuid';
 import { RAuthError } from '../util/Error';
-
-declare global {
-  interface EngineNames {
-    '<<NO_SET>>': string;
-  }
-}
+import { VerifyOptions } from 'jsonwebtoken';
 
 interface SessionControlOptions {
   jwtControl?: JWTControl;
@@ -30,8 +25,8 @@ export class SessionControl {
     this.connectionStore = connectionStore;
   }
 
-  async verify(accessToken: AccessToken): Promise<Session> {
-    return Session.from(this.jwtControl.verify(accessToken), this);
+  async verify(accessToken: AccessToken, options?: VerifyOptions): Promise<Session> {
+    return Session.from(this.jwtControl.verify(accessToken, options), this);
   }
 
   async createSession(userId: UserID, scope: Scope = '', data?: Data): Promise<Session> {
