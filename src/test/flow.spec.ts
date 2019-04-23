@@ -72,4 +72,44 @@ describe('Session Control', () => {
       'Refresh session revoked',
     ).rejected;
   });
+
+  it('get all sessions', async () => {
+    const sessionControl = createObjectSessionControl();
+
+    const session = await sessionControl.createSession('user1');
+
+    await Promise.all([
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+    ]);
+
+    const sessions = await sessionControl.getAllSessions(session);
+
+    expect(sessions).to.length(7);
+  });
+
+  it('Reveke all session', async () => {
+    const sessionControl = createObjectSessionControl();
+
+    const session = await sessionControl.createSession('user1');
+
+    await Promise.all([
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+      sessionControl.createSession('user1'),
+    ]);
+
+    expect(await sessionControl.revokeAllSessions(session)).to.be.eql(true);
+
+    const sessions = await sessionControl.getAllSessions(session);
+
+    expect(sessions).to.length(0);
+  });
 });

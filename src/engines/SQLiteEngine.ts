@@ -35,7 +35,7 @@ export class SQLiteEngine implements Engine {
       promise: Promise,
       cached: true,
     })
-      .then(async (db: any) => {
+      .then(async (db: Database) => {
         await db.run(`CREATE TABLE IF NOT EXISTS ${this.table} (
           id INT PRIMARY KEY,
           sessionId TEXT UNIQUE,
@@ -60,19 +60,38 @@ export class SQLiteEngine implements Engine {
     return true;
   }
 
+  async deleteByUserId(userId: string): Promise<boolean> {
+    const db = await this.sqlite;
+
+    await db.run(`DELETE FROM ${this.table} WHERE userId = $userId`, {
+      $userId: userId,
+    });
+
+    return true;
+  }
+
+  async deleteByIds(sessionIds: string[]): Promise<boolean> {
+    const results = await Promise.all(sessionIds.map(
+      sessionId => this.deleteById(sessionId),
+    ));
+
+    return results.every(result => result);
+  }
+
   async update(register: Register, sets: any): Promise<Register> {
     const db = await this.sqlite;
 
     ow(sets.refreshAt, 'sets.refreshAt', ow.number);
 
-    await db.run(`
-      UPDATE ${this.table}
+    await db.run(
+      `UPDATE ${this.table}
       SET refreshAt = $refreshAt
-      WHERE sessionId = $sessionId
-    `,           {
-      $refreshAt: sets.refreshAt,
-      $sessionId: register.sessionId,
-    });
+      WHERE sessionId = $sessionId`,
+      {
+        $refreshAt: sets.refreshAt,
+        $sessionId: register.sessionId,
+      },
+    );
 
     return this.findById(register.sessionId);
   }
@@ -80,11 +99,10 @@ export class SQLiteEngine implements Engine {
   async findById(sessionId: string): Promise<Register> {
     const db = await this.sqlite;
 
-    const result = await db.get<RegisterRow>(`
-      SELECT * FROM ${this.table} WHERE sessionId = $sessionId;
-    `,                                       {
-      $sessionId: sessionId,
-    });
+    const result = await db.get<RegisterRow>(
+      `SELECT * FROM ${this.table} WHERE sessionId = $sessionId;`,
+      { $sessionId: sessionId },
+    );
 
     if (!result) {
       throw new Error('Register was not created');
@@ -96,6 +114,23 @@ export class SQLiteEngine implements Engine {
       ...res,
       data: JSON.parse(data),
     };
+  }
+
+  async findByUserId(userId: string): Promise<Register[]> {
+    const db = await this.sqlite;
+
+    const results = await db.all<RegisterRow>(
+      `SELECT * FROM ${this.table} WHERE userId = $userId;`,
+      { $userId: userId },
+    );
+
+    return results.map((result) => {
+      const { data, ...res } = result;
+      return {
+        ...res,
+        data: JSON.parse(data),
+      };
+    });
   }
 
   async create(sessionRegister: StrictSessionRegister): Promise<Register> {

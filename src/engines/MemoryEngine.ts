@@ -21,6 +21,22 @@ export class MemoryEngine implements Engine {
     return this.memory.delete(sessionId);
   }
 
+  async deleteByUserId(userId: string): Promise<boolean> {
+    const sessions = [...this.memory.entries()].filter(([, entry]) => {
+      return entry.userId === userId;
+    });
+
+    return sessions.every(([sessionId]) => this.memory.delete(sessionId));
+  }
+
+  async deleteByIds(sessionIds: string[]): Promise<boolean> {
+    const results = await Promise.all(sessionIds.map(
+      sessionId => this.deleteById(sessionId),
+    ));
+
+    return results.every(result => result);
+  }
+
   async update(register: Register, sets: any): Promise<Register> {
     const registerValue: Register = <Register>this.memory.get(register.sessionId);
 
@@ -34,6 +50,10 @@ export class MemoryEngine implements Engine {
 
   async findById(sessionId: string): Promise<Register> {
     return <Register>this.memory.get(sessionId);
+  }
+
+  async findByUserId(userId: string): Promise<Register[]> {
+    return [...this.memory.values()].filter(register => register.userId === userId);
   }
 
   async create(sessionRegister: StrictSessionRegister): Promise<Register> {

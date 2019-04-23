@@ -65,6 +65,18 @@ res.setHeader('Content-Type', 'application/json');
 return res.end(JSON.stringify(session), 'utf8');
 ```
 
+## Revoke all tokens
+
+```ts
+await sessionControl.revokeAllSessions(session)
+```
+
+## List all session
+
+```ts
+const sessions = await sessionControl.getAllSessions(session);
+```
+
 # Engines
 
 The engines help us to control the storage of the sessions.

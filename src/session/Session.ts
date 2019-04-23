@@ -38,6 +38,7 @@ export class Session implements SessionRegister {
   }
 
   readonly refreshAt?: number;
+  readonly createdAt?: number;
 
   readonly iat?: number;
   readonly exp?: number;
@@ -61,6 +62,7 @@ export class Session implements SessionRegister {
         scope: this.scope,
         data: this.data,
         refreshAt: this.refreshAt,
+        createdAt: this.createdAt,
       },
       {
         subject: 'refresh_token',
@@ -77,6 +79,7 @@ export class Session implements SessionRegister {
         sessionId: this.sessionId,
         data: this.data,
         refreshAt: this.refreshAt,
+        createdAt: this.createdAt,
       },
       {
         expiresIn: '1h',

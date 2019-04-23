@@ -35,6 +35,7 @@ export class SessionControl {
       scope,
       data,
       sessionId: uuid(),
+      createdAt: Date.now(),
     });
 
     return Session.from(register, this);
@@ -62,7 +63,19 @@ export class SessionControl {
   }
 
   async revokeSession(session: Required<Pick<Session, 'sessionId'>> & Session): Promise<boolean> {
-    await this.connectionStore.deleteById(session.sessionId);
-    return true;
+    return this.connectionStore.deleteById(session.sessionId);
+  }
+
+  async revokeAllSessions(session: Required<Pick<Session, 'userId'>> & Session): Promise<boolean> {
+    return this.connectionStore.deleteByUserId(session.userId);
+  }
+
+  async getAllSessions(session: Required<Pick<Session, 'userId'>> & Session): Promise<Session[]> {
+    const registers = await this.connectionStore.findByUserId(session.userId);
+
+    return registers.map(
+      register =>
+        Session.from(register, this),
+    );
   }
 }

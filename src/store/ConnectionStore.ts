@@ -25,7 +25,9 @@ export class ConnectionStore {
   }
 
   get deleteById() { return this.engine.deleteById.bind(this.engine); }
+  get deleteByUserId() { return this.engine.deleteByUserId.bind(this.engine); }
   get update() { return this.engine.update.bind(this.engine); }
   get findById() { return this.engine.findById.bind(this.engine); }
+  get findByUserId() { return this.engine.findByUserId.bind(this.engine); }
   get create() { return this.engine.create.bind(this.engine); }
 }
