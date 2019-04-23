@@ -36,6 +36,7 @@ export class SessionControl {
       data,
       sessionId: uuid(),
       createdAt: Date.now(),
+      refreshAt: Date.now(),
     });
 
     return Session.from(register, this);
