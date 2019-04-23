@@ -20,7 +20,7 @@ interface RegisterRow {
 
 declare global {
   interface EngineNames {
-    'SQLite': string;
+    'SQLite': typeof SQLiteEngine;
   }
 }
 
