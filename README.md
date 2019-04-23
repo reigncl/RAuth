@@ -74,7 +74,7 @@ These are the engines that you can use by default with rauth.
 - SQLite `rauth/engines/SQLiteEngine` (***Requires [`sqlite`](https://www.npmjs.com/package/sqlite) installed***)
 - Memory `rauth/engines/MemoryEngine`
 
-## How to use a engine
+## How to use a engine
 
 Importe su motor y utilícelo en sessioncontrol.
 
