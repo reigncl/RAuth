@@ -64,3 +64,25 @@ await sessionControl.revokeSession(session);
 res.setHeader('Content-Type', 'application/json');
 return res.end(JSON.stringify(session), 'utf8');
 ```
+
+# Engines
+
+The engines help us to control the storage of the sessions.
+
+These are the engines that you can use by default with rauth.
+
+- SQLite `rauth/engines/SQLiteEngine` (***Requires [`sqlite`](https://www.npmjs.com/package/sqlite) installed***)
+- Memory `rauth/engines/MemoryEngine`
+
+## How to use a engine
+
+Importe su motor y utilícelo en sessioncontrol.
+
+```ts
+import 'rauth/engines/MemoryEngine';
+import { SessionControl } from 'rauth/session/SessionControl';
+
+const sessionControl = new SessionControl({
+  engineConnectionStore: 'Memory',
+});
+```
