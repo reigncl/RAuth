@@ -45,21 +45,21 @@ export interface TokenDecoded {
 
 interface JWTControlOption {
   algorithm?: 'HS256'
-    | 'HS384'
-    | 'HS512'
-    | 'RS256'
-    | 'RS384'
-    | 'RS512'
-    | 'ES256'
-    | 'ES384'
-    | 'ES512'
-    | 'PS256'
-    | 'PS384';
+  | 'HS384'
+  | 'HS512'
+  | 'RS256'
+  | 'RS384'
+  | 'RS512'
+  | 'ES256'
+  | 'ES384'
+  | 'ES512'
+  | 'PS256'
+  | 'PS384';
   signOptions?: SignOptions;
   verifyOptions?: VerifyOptions;
   secret?: string | Buffer;
-  secretOrPrivateKey?: Secret;
-  secretOrPublicKey?: string | Buffer;
+  privateKey?: Secret;
+  publicKey?: string | Buffer;
 }
 
 export class JWTControl {
@@ -72,13 +72,10 @@ export class JWTControl {
     algorithm = 'RS512',
     signOptions = {},
     verifyOptions = {},
-    secret = undefined,
-    secretOrPrivateKey: optSecretOrPrivateKey = undefined,
-    secretOrPublicKey: optSecretOrPublicKey = undefined,
+    secret,
+    privateKey = secret || defaultPrivateKeyRS512,
+    publicKey = secret || defaultPublicKeyRS512,
   }: JWTControlOption = {}) {
-    const secretOrPrivateKey = secret || optSecretOrPrivateKey;
-    const secretOrPublicKey = secret || optSecretOrPublicKey;
-
     this.signOptions = {
       algorithm,
       ...signOptions,
@@ -89,10 +86,8 @@ export class JWTControl {
       ...verifyOptions,
     };
 
-    this.secretOrPrivateKey = secretOrPrivateKey
-      || checkWarningPrivateKeyVulnerable(defaultPrivateKeyRS512);
-    this.secretOrPublicKey = secretOrPublicKey
-      || checkWarningPublicKeyVulnerable(defaultPublicKeyRS512);
+    this.secretOrPublicKey = checkWarningPublicKeyVulnerable(publicKey);
+    this.secretOrPrivateKey = checkWarningPrivateKeyVulnerable(privateKey);
   }
 
   sign(payload: string | Buffer | object, options?: SignOptions) {
