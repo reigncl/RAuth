@@ -119,7 +119,7 @@ export class SQLiteEngine implements Engine {
   async findByUserId(userId: string): Promise<Register[]> {
     const db = await this.sqlite;
 
-    const results = await db.all<RegisterRow>(
+    const results:RegisterRow[] = await db.all<RegisterRow>(
       `SELECT * FROM ${this.table} WHERE userId = $userId;`,
       { $userId: userId },
     );
