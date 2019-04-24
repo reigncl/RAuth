@@ -82,6 +82,7 @@ export class Session implements SessionRegister {
         createdAt: this.createdAt,
       },
       {
+        subject: 'access_token',
         expiresIn: this.sessionControl ? this.sessionControl.accessTokenExpires : '1h',
       },
     );
