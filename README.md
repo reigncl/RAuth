@@ -86,6 +86,7 @@ These are the engines that you can use by default with rauth.
 - Mongoose `rauth/engines/MongooseEngine`
 - SQLite `rauth/engines/SQLiteEngine` (***Requires [`sqlite`](https://www.npmjs.com/package/sqlite) installed***)
 - Memory `rauth/engines/MemoryEngine`
+- TypeORM `rauth/engines/TypeormEngine`
 
 #### Samples
 
@@ -118,5 +119,13 @@ export const sessionControl = new SessionControl({
     filename: `${__dirname}/db.sqlite`,
     table: 'sessions',
   }),
+});
+```
+
+**Typeorm:**
+```ts
+import '../engines/TypeormEngine';
+export const sessionControl = new SessionControl({
+  connectionStore: new ConnectionStore('Typeorm', { entity: Session }),
 });
 ```
