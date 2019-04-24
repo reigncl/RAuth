@@ -38,7 +38,16 @@ export class SessionControl {
   }
 
   async verify(accessToken: AccessToken, options?: VerifyOptions): Promise<Session> {
-    return Session.from(this.jwtControl.verify(accessToken, options), this);
+    return Session.from(
+      this.jwtControl.verify(
+        accessToken,
+        {
+          subject: 'access_token',
+          ...options,
+        },
+      ),
+      this,
+    );
   }
 
   async createSession(userId: UserID, scope: Scope = '', data?: Data): Promise<Session> {
