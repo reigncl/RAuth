@@ -1,6 +1,5 @@
-import {
-  decode, DecodeOptions, Secret, sign, SignOptions, verify, VerifyOptions,
-} from 'jsonwebtoken';
+// tslint:disable-next-line:max-line-length
+import { decode, DecodeOptions, Secret, sign, SignOptions, verify, VerifyOptions } from 'jsonwebtoken';
 import { Data, Scope, SessionId, UserID } from './Session';
 
 // tslint:disable-next-line:max-line-length
@@ -43,7 +42,7 @@ export interface TokenDecoded {
   userId: UserID;
 }
 
-interface JWTControlOption {
+export interface JWTControlOption {
   algorithm?: 'HS256'
   | 'HS384'
   | 'HS512'
@@ -69,10 +68,10 @@ export class JWTControl {
   readonly secretOrPublicKey: string | Buffer;
 
   constructor({
-    algorithm = 'RS512',
     signOptions = {},
     verifyOptions = {},
     secret,
+    algorithm = secret ? 'HS512' : 'RS512',
     privateKey = secret || defaultPrivateKeyRS512,
     publicKey = secret || defaultPublicKeyRS512,
   }: JWTControlOption = {}) {
