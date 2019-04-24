@@ -9,17 +9,23 @@ interface SessionControlOptions {
   jwtControl?: JWTControl | JWTControlOption;
   engineConnectionStore?: keyof EngineNames;
   connectionStore?: ConnectionStore;
+  accessTokenExpires?: string | number;
+  refreshTokenExpires?: string | number;
   [otherOpt: string]: any;
 }
 
 export class SessionControl {
   jwtControl: JWTControl;
   connectionStore: ConnectionStore;
+  accessTokenExpires: string | number;
+  refreshTokenExpires: string | number;
 
   constructor({
     jwtControl = new JWTControl(),
     engineConnectionStore = '<<NO_SET>>',
     connectionStore = new ConnectionStore(engineConnectionStore),
+    accessTokenExpires = '1h',
+    refreshTokenExpires = '4w',
   }: SessionControlOptions = {}) {
     if (jwtControl instanceof JWTControl) {
       this.jwtControl = jwtControl;
@@ -27,6 +33,8 @@ export class SessionControl {
       this.jwtControl = new JWTControl(jwtControl);
     }
     this.connectionStore = connectionStore;
+    this.accessTokenExpires = accessTokenExpires;
+    this.refreshTokenExpires = refreshTokenExpires;
   }
 
   async verify(accessToken: AccessToken, options?: VerifyOptions): Promise<Session> {

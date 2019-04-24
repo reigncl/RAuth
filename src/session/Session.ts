@@ -49,9 +49,9 @@ export class Session implements SessionRegister {
     readonly scope: Scope,
     readonly sessionId: SessionId,
     readonly data?: Data,
-    sessionControl?: SessionControl,
+    readonly sessionControl?: SessionControl,
   ) {
-    this.jwtControl = (sessionControl && sessionControl.jwtControl) || new JWTControl();
+    this.jwtControl = (this.sessionControl && this.sessionControl.jwtControl) || new JWTControl();
   }
 
   get refreshToken() {
@@ -66,7 +66,7 @@ export class Session implements SessionRegister {
       },
       {
         subject: 'refresh_token',
-        expiresIn: '4w',
+        expiresIn: this.sessionControl ? this.sessionControl.refreshTokenExpires : '4w',
       },
     );
   }
@@ -82,7 +82,7 @@ export class Session implements SessionRegister {
         createdAt: this.createdAt,
       },
       {
-        expiresIn: '1h',
+        expiresIn: this.sessionControl ? this.sessionControl.accessTokenExpires : '1h',
       },
     );
   }
