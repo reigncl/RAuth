@@ -1,6 +1,6 @@
 {
   "name": "rauth",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Make your service of the authentication with RAuth library.",
   "private": false,
   "scripts": {
