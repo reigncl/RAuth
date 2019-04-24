@@ -64,7 +64,9 @@ export class SessionControl {
   }
 
   async refreshSession(refreshToken: RefreshToken): Promise<Session> {
-    const tokenDecoded = this.jwtControl.verify(refreshToken);
+    const tokenDecoded = this.jwtControl.verify(refreshToken, {
+      subject: 'refresh_token',
+    });
 
     const register = await this.connectionStore.findById(tokenDecoded.sessionId);
 
