@@ -1,12 +1,12 @@
-import { JWTControl } from './JWTControl';
-import { AccessToken, Session, UserID, Data, RefreshToken, Scope } from './Session';
-import { ConnectionStore } from '../store/ConnectionStore';
-import uuid from 'uuid';
-import { RAuthError } from '../util/Error';
 import { VerifyOptions } from 'jsonwebtoken';
+import uuid from 'uuid';
+import { ConnectionStore } from '../store/ConnectionStore';
+import { RAuthError } from '../util/Error';
+import { JWTControl, JWTControlOption } from './JWTControl';
+import { AccessToken, Data, RefreshToken, Scope, Session, UserID } from './Session';
 
 interface SessionControlOptions {
-  jwtControl?: JWTControl;
+  jwtControl?: JWTControl | JWTControlOption;
   engineConnectionStore?: keyof EngineNames;
   connectionStore?: ConnectionStore;
   [otherOpt: string]: any;
@@ -21,7 +21,10 @@ export class SessionControl {
     engineConnectionStore = '<<NO_SET>>',
     connectionStore = new ConnectionStore(engineConnectionStore),
   }: SessionControlOptions = {}) {
-    this.jwtControl = jwtControl;
+    if (jwtControl instanceof JWTControl) {
+      this.jwtControl = jwtControl;
+    }
+    this.jwtControl = new JWTControl(jwtControl);
     this.connectionStore = connectionStore;
   }
 
