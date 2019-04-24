@@ -1,8 +1,9 @@
+// @ts-ignore
+import { BaseEntity } from 'typeorm';
 import { StrictSessionRegister } from '../session/Session';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { Engine } from '../store/Engine';
 import { Register } from '../store/Register';
-import { BaseEntity } from 'typeorm';
 
 declare global {
   interface EngineNames {
