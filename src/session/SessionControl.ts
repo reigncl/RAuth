@@ -23,8 +23,9 @@ export class SessionControl {
   }: SessionControlOptions = {}) {
     if (jwtControl instanceof JWTControl) {
       this.jwtControl = jwtControl;
+    } else {
+      this.jwtControl = new JWTControl(jwtControl);
     }
-    this.jwtControl = new JWTControl(jwtControl);
     this.connectionStore = connectionStore;
   }
 
