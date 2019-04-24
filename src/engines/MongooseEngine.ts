@@ -58,7 +58,8 @@ export class MongooseEngine implements Engine {
   }
 
   async create(sessionRegister: StrictSessionRegister): Promise<Register> {
-    return <any>this.model.create(sessionRegister);
+    const doc = await this.model.create(sessionRegister);
+    return <any>doc.toJSON();
   }
 }
 
