@@ -83,18 +83,40 @@ The engines help us to control the storage of the sessions.
 
 These are the engines that you can use by default with rauth.
 
+- Mongoose `rauth/engines/MongooseEngine`
 - SQLite `rauth/engines/SQLiteEngine` (***Requires [`sqlite`](https://www.npmjs.com/package/sqlite) installed***)
 - Memory `rauth/engines/MemoryEngine`
 
-## How to use a engine
+#### Samples
 
-Importe su motor y utilícelo en sessioncontrol.
+**Mongoose:**
+```ts
+import 'rauth/engines/MongooseEngine';
+export const sessionControl = new SessionControl({
+  connectionStore: new ConnectionStore('Mongoose', { model: SessionModel }),
+});
+```
 
+**Memory:**
 ```ts
 import 'rauth/engines/MemoryEngine';
-import { SessionControl } from 'rauth/session/SessionControl';
-
-const sessionControl = new SessionControl({
+export const sessionControl = new SessionControl({
   engineConnectionStore: 'Memory',
+});
+```
+
+**SQLite:**
+```ts
+import 'rauth/engines/SQLiteEngine';
+export const sessionControl = new SessionControl({
+  engineConnectionStore: 'SQLite',
+});
+// Or
+import 'rauth/engines/SQLiteEngine';
+export const sessionControl = new SessionControl({
+  connectionStore: new ConnectionStore('SQLite', {
+    filename: `${__dirname}/db.sqlite`,
+    table: 'sessions',
+  }),
 });
 ```
