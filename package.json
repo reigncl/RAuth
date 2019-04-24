@@ -52,7 +52,7 @@
     "tslint-config-airbnb": "^5.11.1"
   },
   "peerDependencies": {
-    "sqlite": "*",
-    "typeorm": "*"
+    "sqlite": "^3.0.3",
+    "typeorm": "^0.2.16"
   }
 }
