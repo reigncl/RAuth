@@ -83,10 +83,10 @@ The engines help us to control the storage of the sessions.
 
 These are the engines that you can use by default with rauth.
 
-- Mongoose `rauth/engines/MongooseEngine`
+- Mongoose `rauth/engines/MongooseEngine` ([Sample](/src/sample/sample-with-mongoose.ts))
 - SQLite `rauth/engines/SQLiteEngine` (***Requires [`sqlite`](https://www.npmjs.com/package/sqlite) installed***)
 - Memory `rauth/engines/MemoryEngine`
-- TypeORM `rauth/engines/TypeormEngine`
+- TypeORM `rauth/engines/TypeormEngine` ([Sample](/src/sample/sample-with-typeorm.ts) ***Requires [`typeorm`](https://www.npmjs.com/package/typeorm) installed***)
 
 #### Samples
 
