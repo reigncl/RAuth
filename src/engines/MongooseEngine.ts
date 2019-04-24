@@ -1,9 +1,8 @@
-import { Engine } from '../store/Engine';
-import { Model, Document } from 'mongoose';
-import { Register } from '../store/Register';
+import { Document, Model } from 'mongoose';
 import { StrictSessionRegister } from '../session/Session';
 import { ConnectionStore } from '../store/ConnectionStore';
-import ow from 'ow';
+import { Engine } from '../store/Engine';
+import { Register } from '../store/Register';
 
 declare global {
   interface EngineNames {
