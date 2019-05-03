@@ -17,5 +17,6 @@ notifications:
   email:
     recipients:
       - exequiel@reigndesign.com
+      - jona@reigndesign.com
     on_success: change
     on_failure: always

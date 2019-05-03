@@ -10,24 +10,6 @@
     "release": "np",
     "version": "tsc"
   },
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "include": [
-      "src/**/*"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "**/*.spec.ts",
-      "src/sample/**/*"
-    ],
-    "reporter": [
-      "html"
-    ],
-    "all": true
-  },
   "pre-commit": [
     "lint",
     "test"

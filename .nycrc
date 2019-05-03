@@ -15,11 +15,13 @@
   ],
   "ignore-class-method": "methodToIgnore",
   "reporter": [
+    "html",
     "lcov",
     "text-summary"
   ],
   "extension": [
-    ".ts"
+    ".ts",
+    ".tsx"
   ],
   "all": true
 }
