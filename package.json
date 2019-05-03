@@ -6,9 +6,27 @@
   "scripts": {
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
-    "test": "mocha -r ts-node/register src/test/**/*.ts",
+    "test": "nyc mocha -r ts-node/register src/test/**/*.ts",
     "release": "np",
     "version": "tsc"
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "**/*.spec.ts",
+      "src/sample/**/*"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
   },
   "pre-commit": [
     "lint",
@@ -37,7 +55,6 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "typescript": "^3.4.3",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.6",
@@ -46,10 +63,12 @@
     "chai-as-promised": "^7.1.1",
     "mocha": "^6.1.4",
     "np": "*",
+    "nyc": "^14.1.0",
     "pre-commit": "^1.2.2",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
-    "tslint-config-airbnb": "^5.11.1"
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.4.3"
   },
   "peerDependencies": {
     "sqlite": "^3.0.3",
