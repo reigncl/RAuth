@@ -1,6 +1,7 @@
 # RAuth 🔏
 
 [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=master)](https://travis-ci.com/reigndesign/RAuth)
+[![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=develop)](https://travis-ci.com/reigndesign/RAuth)
 
 Make your service of the authentication with RAuth library.
 
