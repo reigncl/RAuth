@@ -1,32 +1,14 @@
 {
   "name": "rauth",
-  "version": "1.0.16",
-  "description": "Make your service of the authentication with RAuth library.",
+  "version": "1.0.17",
+  "description": "Authentication and Authorization library via JWT",
   "private": false,
   "scripts": {
     "build": "tsc",
-    "lint": "tslint --project tsconfig.json",
-    "test": "nyc mocha -r ts-node/register src/test/**/*.ts",
+    "lint": "tslint -c tslint.json --project tsconfig.json",
+    "test": "nyc --reporter=html mocha -c -r ts-node/register --recursive src/test/**/*.ts --reporter=list --exit",
     "release": "np",
     "version": "tsc"
-  },
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "include": [
-      "src/**/*"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "**/*.spec.ts",
-      "src/sample/**/*"
-    ],
-    "reporter": [
-      "html"
-    ],
-    "all": true
   },
   "pre-commit": [
     "lint",

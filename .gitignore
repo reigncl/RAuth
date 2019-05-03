@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/node,windows,linux,macos
 # Edit at https://www.gitignore.io/?templates=node,windows,linux,macos
 
@@ -28,6 +27,10 @@ Icon
 
 # Thumbnails
 ._*
+
+### IDEs ###
+.idea/
+.vscode/
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
