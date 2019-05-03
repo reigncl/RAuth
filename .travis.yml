@@ -1,0 +1,21 @@
+language: node_js
+os:
+  - linux
+  - osx
+node_js:
+  - "10.15"
+cache:
+  directories:
+    - "node_modules"
+sudo: false
+install:
+  - npm install
+script:
+  - npm run lint
+  - npm run test
+notifications:
+  email:
+    recipients:
+      - exequiel@reigndesign.com
+    on_success: change
+    on_failure: always
