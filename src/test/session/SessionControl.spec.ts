@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import ow from 'ow';
-import '../engines/MemoryEngine';
-import { SessionControl } from '../session/SessionControl';
+import '../../engines/MemoryEngine';
+import { SessionControl } from '../../session/SessionControl';
 
 chai.use(chaiAsPromised);
 
@@ -13,11 +13,11 @@ function createObjectSessionControl() {
 }
 
 describe('Session Control', () => {
-  it('Create instace session control', () => {
+  it('Create instance session control', () => {
     createObjectSessionControl();
   });
 
-  it('create session', async () => {
+  it('Create session', async () => {
     const sessionControl = createObjectSessionControl();
 
     const session = await sessionControl.createSession('me', '', {
@@ -37,7 +37,7 @@ describe('Session Control', () => {
     }));
   });
 
-  it('refresh session', async () => {
+  it('Refresh session', async () => {
     const sessionControl = createObjectSessionControl();
 
     const session = await sessionControl.createSession('me', '', {
@@ -56,7 +56,7 @@ describe('Session Control', () => {
     expect(secondCredential.refresh_token).not.equals(firstCredentials.refresh_token);
   });
 
-  it('revoke session', async () => {
+  it('Revoke session', async () => {
     const sessionControl = createObjectSessionControl();
 
     const session = await sessionControl.createSession('me', '', {
@@ -73,7 +73,7 @@ describe('Session Control', () => {
     ).rejected;
   });
 
-  it('get all sessions', async () => {
+  it('Get all sessions', async () => {
     const sessionControl = createObjectSessionControl();
 
     const session = await sessionControl.createSession('user1');
@@ -92,7 +92,7 @@ describe('Session Control', () => {
     expect(sessions).to.length(7);
   });
 
-  it('Reveke all session', async () => {
+  it('Revoke all session', async () => {
     const sessionControl = createObjectSessionControl();
 
     const session = await sessionControl.createSession('user1');

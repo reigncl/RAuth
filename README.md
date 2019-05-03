@@ -1,9 +1,11 @@
-# RAuth 🔏
+# RAuth 🔏 - Reign Authorization and Authentication library
 
 - Travis Master: [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=master)](https://travis-ci.com/reigndesign/RAuth)
 - Travis Develop: [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=develop)](https://travis-ci.com/reigndesign/RAuth)
 
-Make your service of the authentication with RAuth library.
+RAuth library provides a simple way for using Authorization and Authentication via JWT 
+encapsulating their main methods. Allows to handle multiple sessions ensuring trust between 
+an application and its users.
 
 # How to use
 
@@ -22,7 +24,7 @@ const sessionControl = new SessionControl({ engineConnectionStore: 'SQLite' });
 
 ## Create an authorization handler
 
-This handler allows you to create the session
+This handler allows create the session
 
 ```ts
 // Handler to GET /authorize?grant_type=basic
@@ -44,7 +46,7 @@ const session = await sessionControl.verify(token);
 
 ## Create a refresh token handler
 
-This handler allows you to refresh the session.
+This handler allows refresh the session.
 
 ```ts
 // Handler to GET /authorize?grant_type=refresh_token&refresh_token=...
@@ -58,7 +60,7 @@ return res.end(JSON.stringify(session), 'utf8');
 
 ## Create a revoke token handler
 
-This handler allow revoke a refresh token, to invalidate the next use of refresh token.
+This handler allows revoke a refresh token.
 
 ```ts
 // Handler to GET /logout
@@ -82,9 +84,7 @@ const sessions = await sessionControl.getAllSessions(session);
 
 # Engines
 
-The engines help us to control the storage of the sessions.
-
-These are the engines that you can use by default with rauth.
+The engines help control the session storage. Currently, RAuth provides following engines:
 
 - Mongoose `rauth/engines/MongooseEngine` ([Sample](/src/sample/sample-with-mongoose.ts))
 - SQLite `rauth/engines/SQLiteEngine` (***Requires [`sqlite`](https://www.npmjs.com/package/sqlite) installed***)
