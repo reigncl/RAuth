@@ -1,0 +1,26 @@
+language: node_js
+os:
+  - linux
+node_js:
+  - '10.15'
+cache:
+  directories:
+    - node_modules
+sudo: false
+install:
+  - npm install
+script:
+  - npm run lint
+  - npm run test
+notifications:
+  email:
+    recipients:
+      - exequiel@reigndesign.com
+      - jona@reigndesign.com
+    on_success: change
+    on_failure: always
+deploy:
+  provider: script
+  script: npm run release patch
+  on:
+    branch: master

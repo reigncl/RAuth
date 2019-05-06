@@ -1,0 +1,27 @@
+{
+  "check-coverage": true,
+  "per-file": true,
+  "lines": 80,
+  "statements": 80,
+  "functions": 80,
+  "branches": 50,
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/sample",
+    "src/test",
+    "coverage/*.ts"
+  ],
+  "ignore-class-method": "methodToIgnore",
+  "reporter": [
+    "html",
+    "lcov",
+    "text-summary"
+  ],
+  "extension": [
+    ".ts",
+    ".tsx"
+  ],
+  "all": true
+}
