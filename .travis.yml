@@ -19,6 +19,7 @@ notifications:
       - jona@reigndesign.com
     on_success: change
     on_failure: always
+before_deploy: "npm run version"
 deploy:
   provider: npm
   email: info@reigndesign.com
