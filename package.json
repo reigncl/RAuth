@@ -1,6 +1,6 @@
 {
   "name": "rauth",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Authentication and Authorization library via JWT",
   "private": false,
   "scripts": {
