@@ -74,7 +74,7 @@ export class SessionControl {
       throw new RAuthError('Not found Register');
     }
 
-    if (tokenDecoded.refreshAt !== register.refreshAt) {
+    if (tokenDecoded.refreshAt.toString() !== register.refreshAt.toString()) {
       throw new RAuthError('Token is not valid');
     }
 
