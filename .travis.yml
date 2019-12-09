@@ -19,8 +19,12 @@ notifications:
       - jona@reigndesign.com
     on_success: change
     on_failure: always
+before_deploy: 
+  - printf "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+  - npm run version
 deploy:
-  provider: script
-  script: npm run release patch
+  provider: npm
+  email: info@reigndesign.com
+  api_key: $NPM_TOKEN
   on:
-    branch: master
+    tags: true
