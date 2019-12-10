@@ -64,8 +64,8 @@ export interface JWTControlOption {
 export class JWTControl {
   readonly signOptions: SignOptions;
   readonly verifyOptions: VerifyOptions;
-  readonly secretOrPrivateKey: Secret;
-  readonly secretOrPublicKey: string | Buffer;
+  readonly secretOrPrivateKey: Secret = '';
+  readonly secretOrPublicKey: string | Buffer = '';
 
   constructor({
     signOptions = {},
@@ -85,8 +85,18 @@ export class JWTControl {
       ...verifyOptions,
     };
 
-    this.secretOrPublicKey = checkWarningPublicKeyVulnerable(publicKey);
-    this.secretOrPrivateKey = checkWarningPrivateKeyVulnerable(privateKey);
+    Object.defineProperties(this, {
+      secretOrPublicKey: {
+        enumerable: false,
+        writable: false,
+        value: checkWarningPublicKeyVulnerable(publicKey),
+      },
+      secretOrPrivateKey: {
+        enumerable: false,
+        writable: false,
+        value: checkWarningPrivateKeyVulnerable(privateKey),
+      },
+    });
   }
 
   sign(payload: string | Buffer | object, options?: SignOptions) {
