@@ -5,7 +5,7 @@ import { JWTControl } from './JWTControl';
 export type SessionId = string;
 export type Scope = string | string[];
 export type UserID = string;
-export type Data = object;
+export type Data = { [prop: string]: any };
 export type AccessToken = string;
 export type RefreshToken = string;
 
@@ -60,7 +60,6 @@ export class Session implements SessionRegister {
         userId: this.userId,
         sessionId: this.sessionId,
         scope: this.scope,
-        data: this.data,
         refreshAt: this.refreshAt,
         createdAt: this.createdAt,
       },

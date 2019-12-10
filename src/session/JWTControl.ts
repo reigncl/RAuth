@@ -72,8 +72,8 @@ export class JWTControl {
     verifyOptions = {},
     secret,
     algorithm = secret ? 'HS512' : 'RS512',
-    privateKey = secret || defaultPrivateKeyRS512,
-    publicKey = secret || defaultPublicKeyRS512,
+    privateKey = secret || defaultPrivateKeyRS512,
+    publicKey = secret || defaultPublicKeyRS512,
   }: JWTControlOption = {}) {
     this.signOptions = {
       algorithm,
