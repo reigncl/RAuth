@@ -50,15 +50,22 @@ export class SessionControl {
     );
   }
 
-  async createSession(userId: UserID, scope: Scope = '', data?: Data): Promise<Session> {
+  async createSession(
+    userId: UserID,
+    scope: Scope = '',
+    data?: Data,
+    moreData?: any,
+  ): Promise<Session> {
     const register = await this.connectionStore.create({
       userId,
       scope,
-      data,
       sessionId: uuid(),
       createdAt: Date.now(),
       refreshAt: Date.now(),
+      ...moreData,
     });
+
+    register.data = data;
 
     return Session.from(register, this);
   }

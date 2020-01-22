@@ -21,7 +21,11 @@ export class ConnectionStore {
   }
 
   static add(engineName: keyof EngineNames, engine: typeof Engine) {
-    engines[engineName] = <any>engine;
+    Object.defineProperty(engines, engineName, {
+      value: engine,
+      enumerable: true,
+      writable: false,
+    });
   }
 
   get deleteById() { return this.engine.deleteById.bind(this.engine); }
