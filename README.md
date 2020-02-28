@@ -82,6 +82,17 @@ await sessionControl.revokeAllSessions(session)
 const sessions = await sessionControl.getAllSessions(session);
 ```
 
+## Events
+
+```ts
+sessionControl.on('create-session', callback(){});
+```
+
+**Events list and arguments:**
+- `create-session`: Event emitted after of created the object o row in your Storage.
+  - Args: `{ register: Register }`
+    - `regiter` (`Register`): Register inserted in your Storage.
+
 # Engines
 
 The engines help control the session storage. Currently, RAuth provides following engines:

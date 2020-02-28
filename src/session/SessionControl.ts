@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'events';
 import { VerifyOptions } from 'jsonwebtoken';
 import uuid from 'uuid';
 import { ConnectionStore } from '../store/ConnectionStore';
@@ -20,7 +20,7 @@ export class SessionControl {
   connectionStore: ConnectionStore;
   accessTokenExpires: string | number;
   refreshTokenExpires: string | number;
-  events = new  EventEmitter();
+  events = new EventEmitter();
 
   constructor({
     jwtControl = new JWTControl(),
@@ -68,6 +68,8 @@ export class SessionControl {
     });
 
     register.data = data;
+
+    this.events.emit('create-session', { register });
 
     return Session.from(register, this);
   }
