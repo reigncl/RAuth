@@ -1,6 +1,11 @@
 !dist
 !index.*
 .vscode
+.github
+.nyc_output
+coverage
+.nycrc
+.travis.yml
 src
 tsconfig.json
 tslint.json
