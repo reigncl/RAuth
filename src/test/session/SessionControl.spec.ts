@@ -112,4 +112,24 @@ describe('Session Control', () => {
 
     expect(sessions).to.length(0);
   });
+
+  describe('Events', () => {
+    it('event create-session', async () => {
+      const sessionControl = createObjectSessionControl();
+
+      let called = false;
+
+      sessionControl.on('create-session', () => {
+        called = true;
+      });
+
+      await sessionControl.createSession('me', '', {
+        role: 'Admin Cool',
+        name: 'Jona',
+        email: 'email@sample.com',
+      });
+
+      expect(called, 'Event is called').is.true;
+    });
+  });
 });

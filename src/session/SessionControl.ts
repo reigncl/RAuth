@@ -6,6 +6,8 @@ import { RAuthError } from '../util/Error';
 import { JWTControl, JWTControlOption } from './JWTControl';
 import { AccessToken, Data, RefreshToken, Scope, Session, UserID } from './Session';
 
+type eventsNames = 'create-session';
+
 interface SessionControlOptions {
   jwtControl?: JWTControl | JWTControlOption;
   engineConnectionStore?: keyof EngineNames;
@@ -112,5 +114,13 @@ export class SessionControl {
       register =>
         Session.from(register, this),
     );
+  }
+
+  emmit(event: eventsNames, ...args: any[]) {
+    return this.events.emit(event, ...args);
+  }
+
+  on(event: eventsNames, listener: (...args:any[]) => void) {
+    return this.events.on(event, listener);
   }
 }
