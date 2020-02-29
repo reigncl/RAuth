@@ -92,6 +92,9 @@ sessionControl.on('create-session', callback(){});
 - `create-session`: Event emitted after of created the object o row in your Storage.
   - Args: `{ register: Register }`
     - `regiter` (`Register`): Register inserted in your Storage.
+- `refresh-session`: Event emitted after of to refresh the object o row in your Storage.
+  - Args: `{ register: Register }`
+    - `regiter` (`Register`): Register inserted in your Storage.
 
 # Engines
 

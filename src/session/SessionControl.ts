@@ -6,7 +6,7 @@ import { RAuthError } from '../util/Error';
 import { JWTControl, JWTControlOption } from './JWTControl';
 import { AccessToken, Data, RefreshToken, Scope, Session, UserID } from './Session';
 
-type eventsNames = 'create-session';
+type eventsNames = 'create-session' | 'refresh-session';
 
 interface SessionControlOptions {
   jwtControl?: JWTControl | JWTControlOption;
@@ -71,7 +71,7 @@ export class SessionControl {
 
     register.data = data;
 
-    this.events.emit('create-session', { register });
+    this.emit('create-session', { register });
 
     return Session.from(register, this);
   }
@@ -91,12 +91,13 @@ export class SessionControl {
       throw new RAuthError('Token is not valid');
     }
 
-    return Session.from(
-      await this.connectionStore.update(register, {
-        refreshAt: Date.now(),
-      }),
-      this,
-    );
+    const nextRegister = await this.connectionStore.update(register, {
+      refreshAt: Date.now(),
+    });
+
+    this.emit('refresh-session', { register: nextRegister });
+
+    return Session.from(nextRegister, this);
   }
 
   async revokeSession(session: Required<Pick<Session, 'sessionId'>> & Session): Promise<boolean> {
@@ -116,11 +117,11 @@ export class SessionControl {
     );
   }
 
-  emmit(event: eventsNames, ...args: any[]) {
+  emit(event: eventsNames, ...args: any[]) {
     return this.events.emit(event, ...args);
   }
 
-  on(event: eventsNames, listener: (...args:any[]) => void) {
+  on(event: eventsNames, listener: (...args: any[]) => void) {
     return this.events.on(event, listener);
   }
 }
