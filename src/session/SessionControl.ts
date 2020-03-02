@@ -76,7 +76,7 @@ export class SessionControl {
     return Session.from(register, this);
   }
 
-  async refreshSession(refreshToken: RefreshToken): Promise<Session> {
+  async refreshSession(refreshToken: RefreshToken, options?: { data?: Data }): Promise<Session> {
     const tokenDecoded = this.jwtControl.verify(refreshToken, {
       subject: 'refresh_token',
     });
@@ -94,6 +94,8 @@ export class SessionControl {
     const nextRegister = await this.connectionStore.update(register, {
       refreshAt: Date.now(),
     });
+
+    register.data = options?.data;
 
     this.emit('refresh-session', { register: nextRegister });
 
