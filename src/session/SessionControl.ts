@@ -95,7 +95,7 @@ export class SessionControl {
       refreshAt: Date.now(),
     });
 
-    register.data = options?.data;
+    nextRegister.data = options?.data;
 
     this.emit('refresh-session', { register: nextRegister });
 
