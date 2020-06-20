@@ -2,9 +2,6 @@
 
 [![Package Quality](https://npm.packagequality.com/shield/rauth.svg)](https://packagequality.com/#?package=rauth)
 
-- Travis Master: [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=master)](https://travis-ci.com/reigndesign/RAuth)
-- Travis Develop: [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=develop)](https://travis-ci.com/reigndesign/RAuth)
-
 RAuth library provides a simple way for using Authorization and Authentication via JWT 
 encapsulating their main methods. Allows to handle multiple sessions ensuring trust between 
 an application and its users.
