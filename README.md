@@ -1,5 +1,7 @@
 # RAuth 🔏 - Reign Authorization and Authentication library
 
+[![Package Quality](https://npm.packagequality.com/shield/rauth.svg)](https://packagequality.com/#?package=rauth)
+
 - Travis Master: [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=master)](https://travis-ci.com/reigndesign/RAuth)
 - Travis Develop: [![Build Status](https://travis-ci.com/reigndesign/RAuth.svg?branch=develop)](https://travis-ci.com/reigndesign/RAuth)
 
