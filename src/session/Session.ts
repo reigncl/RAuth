@@ -1,6 +1,7 @@
 import ow from 'ow';
 import { SessionControl } from './SessionControl';
 import { JWTControl } from './JWTControl';
+import ms from 'ms';
 
 export type SessionId = string;
 export type Scope = string | string[];
@@ -32,7 +33,7 @@ export class Session implements SessionRegister {
     ow(sessionId, 'sessionId', ow.string);
 
     return Object.assign(
-      new Session(userId, scope, sessionId, data, sessionControl),
+      new Session({ userId, scope, sessionId, data, sessionControl }),
       otherDataSession,
     );
   }
@@ -42,16 +43,27 @@ export class Session implements SessionRegister {
 
   readonly iat?: number;
   readonly exp?: number;
-  readonly jwtControl: JWTControl;
 
-  constructor(
-    readonly userId: UserID,
-    readonly scope: Scope,
-    readonly sessionId: SessionId,
+  constructor(private readonly options?: {
+    readonly userId?: UserID,
+    readonly scope?: Scope,
+    readonly sessionId?: SessionId,
     readonly data?: Data,
     readonly sessionControl?: SessionControl,
-  ) {
-    this.jwtControl = (this.sessionControl && this.sessionControl.jwtControl) || new JWTControl();
+  }) { }
+
+  readonly sessionControl = this.options?.sessionControl;
+  readonly jwtControl = this.options?.sessionControl?.jwtControl ?? new JWTControl();
+  readonly userId = this.options?.userId;
+  readonly scope = this.options?.scope;
+  readonly sessionId = this.options?.sessionId;
+  readonly data = this.options?.data;
+
+  readonly accessTokenExpires = ms(this.sessionControl?.accessTokenExpires.toString() ?? '1h');
+  readonly refreshTokenExpires = ms(this.sessionControl?.refreshTokenExpires.toString() ?? '4w');
+
+  get accessTokenExpiresSeg() {
+    return Math.floor(this.accessTokenExpires / 1000);
   }
 
   get refreshToken() {
@@ -65,7 +77,7 @@ export class Session implements SessionRegister {
       },
       {
         subject: 'refresh_token',
-        expiresIn: this.sessionControl ? this.sessionControl.refreshTokenExpires : '4w',
+        expiresIn: this.refreshTokenExpires,
       },
     );
   }
@@ -82,7 +94,7 @@ export class Session implements SessionRegister {
       },
       {
         subject: 'access_token',
-        expiresIn: this.sessionControl ? this.sessionControl.accessTokenExpires : '1h',
+        expiresIn: this.accessTokenExpires,
       },
     );
   }
@@ -91,6 +103,7 @@ export class Session implements SessionRegister {
     return {
       access_token: this.accessToken,
       refresh_token: this.refreshToken,
+      expires_in: this.accessTokenExpiresSeg,
     };
   }
 }

@@ -34,6 +34,7 @@ describe('Session Control', () => {
     ow(firstCredentials, ow.object.exactShape({
       access_token: ow.string,
       refresh_token: ow.string,
+      expires_in: ow.number,
     }));
   });
 
