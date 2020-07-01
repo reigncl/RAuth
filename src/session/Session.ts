@@ -24,6 +24,10 @@ export interface SessionRegister {
 type propRequired = 'sessionId' | 'userId' | 'scope';
 export type StrictSessionRegister = Required<Pick<SessionRegister, propRequired>> & SessionRegister;
 
+export const msToSec = (inp: string | number) => {
+  return Math.floor(ms(inp.toString() ?? '1h') / 1000);
+};
+
 export class Session implements SessionRegister {
   static from(
     { userId, scope, sessionId, data, ...otherDataSession }: StrictSessionRegister,
@@ -59,12 +63,8 @@ export class Session implements SessionRegister {
   readonly sessionId = this.options?.sessionId;
   readonly data = this.options?.data;
 
-  readonly accessTokenExpires = ms(this.sessionControl?.accessTokenExpires.toString() ?? '1h');
-  readonly refreshTokenExpires = ms(this.sessionControl?.refreshTokenExpires.toString() ?? '4w');
-
-  get accessTokenExpiresSeg() {
-    return Math.floor(this.accessTokenExpires / 1000);
-  }
+  readonly accessTokenExpires = msToSec(this.sessionControl?.accessTokenExpires ?? '1h');
+  readonly refreshTokenExpires = msToSec(this.sessionControl?.refreshTokenExpires ?? '4w');
 
   get refreshToken() {
     return this.jwtControl.sign(
@@ -103,7 +103,7 @@ export class Session implements SessionRegister {
     return {
       access_token: this.accessToken,
       refresh_token: this.refreshToken,
-      expires_in: this.accessTokenExpiresSeg,
+      expires_in: this.accessTokenExpires,
     };
   }
 }

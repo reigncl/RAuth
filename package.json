@@ -8,7 +8,8 @@
     "lint": "tslint -c tslint.json --project tsconfig.json",
     "test": "nyc --reporter=html mocha -c -r ts-node/register --recursive src/test/**/*.ts --reporter=list --exit",
     "release": "np",
-    "version": "tsc"
+    "version": "tsc",
+    "prepare": "tsc"
   },
   "pre-commit": [
     "lint",
