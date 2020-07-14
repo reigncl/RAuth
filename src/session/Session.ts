@@ -28,14 +28,16 @@ export const msToSec = (inp: string | number) => {
   return Math.floor(ms(inp.toString() ?? '1h') / 1000);
 };
 
+export const scopeToString = (scope?: string | string[]) => {
+  if (Array.isArray(scope)) return scope.join(' ');
+  return scope;
+};
+
 export class Session implements SessionRegister {
   static from(
     { userId, scope, sessionId, data, ...otherDataSession }: StrictSessionRegister,
     sessionControl: SessionControl,
   ): Session {
-    ow(userId, 'userId', ow.string);
-    ow(sessionId, 'sessionId', ow.string);
-
     return Object.assign(
       new Session({ userId, scope, sessionId, data, sessionControl }),
       otherDataSession,
@@ -48,7 +50,7 @@ export class Session implements SessionRegister {
   readonly iat?: number;
   readonly exp?: number;
 
-  constructor(private readonly options?: {
+  private constructor(private readonly options?: {
     readonly userId?: UserID,
     readonly scope?: Scope,
     readonly sessionId?: SessionId,
@@ -59,7 +61,7 @@ export class Session implements SessionRegister {
   readonly sessionControl = this.options?.sessionControl;
   readonly jwtControl = this.options?.sessionControl?.jwtControl ?? new JWTControl();
   readonly userId = this.options?.userId;
-  readonly scope = this.options?.scope;
+  readonly scope = scopeToString(this.options?.scope);
   readonly sessionId = this.options?.sessionId;
   readonly data = this.options?.data;
 
