@@ -170,3 +170,4 @@ util/
 *.d.ts
 *.js*
 !src/**/*
+!.github
