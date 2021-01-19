@@ -1,6 +1,6 @@
 {
   "name": "rauth",
-  "version": "1.1.5",
+  "version": "1.1.6-beta.2",
   "description": "Authentication and Authorization library via JWT",
   "private": false,
   "scripts": {
@@ -8,7 +8,8 @@
     "lint": "tslint -c tslint.json --project tsconfig.json",
     "test": "nyc --reporter=html mocha -c -r ts-node/register --recursive src/test/**/*.ts --reporter=list --exit",
     "release": "np",
-    "version": "tsc"
+    "version": "tsc",
+    "prepare": "tsc"
   },
   "pre-commit": [
     "lint",
@@ -40,6 +41,7 @@
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.6",
+    "@types/ms": "^0.7.31",
     "@types/uuid": "^3.4.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",

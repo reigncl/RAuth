@@ -3,6 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import ow from 'ow';
 import '../../engines/MemoryEngine';
 import { SessionControl } from '../../session/SessionControl';
+import jsonwebtoken from 'jsonwebtoken';
 
 chai.use(chaiAsPromised);
 
@@ -15,6 +16,28 @@ function createObjectSessionControl() {
 describe('Session Control', () => {
   it('Create instance session control', () => {
     createObjectSessionControl();
+  });
+
+  it('Create session with scope string[]', async () => {
+    const sessionControl = createObjectSessionControl();
+
+    const session1 = await sessionControl.createSession('me', 'a b c', {
+      role: 'Admin Cool',
+      name: 'Jona',
+      email: 'email@sample.com',
+    });
+
+    const session2 = await sessionControl.createSession('me', ['a', 'b', 'c'], {
+      role: 'Admin Cool',
+      name: 'Jona',
+      email: 'email@sample.com',
+    });
+
+    const s1: any = jsonwebtoken.decode(session1.accessToken);
+    const s2: any = jsonwebtoken.decode(session2.accessToken);
+
+    expect(s1.scope).is.eql('a b c');
+    expect(s2.scope).is.eql('a b c');
   });
 
   it('Create session', async () => {
@@ -34,6 +57,7 @@ describe('Session Control', () => {
     ow(firstCredentials, ow.object.exactShape({
       access_token: ow.string,
       refresh_token: ow.string,
+      expires_in: ow.number,
     }));
   });
 

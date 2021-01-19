@@ -13,23 +13,11 @@ function checkWarningPublicKeyVulnerable<T>(secretOrPublicKey: T | Buffer) {
   if (!checkWarningPublicKeyVulnerable.warned && defaultPublicKeyRS512 === secretOrPublicKey) {
     checkWarningPublicKeyVulnerable.warned = true;
     process.emitWarning(
-      'You are using a vulnerable public key.',
+      'You are using a vulnerable key.',
       'JsonWebTokenControl#secretOrPublicKey',
     );
   }
   return secretOrPublicKey;
-}
-
-checkWarningPrivateKeyVulnerable.warned = false;
-function checkWarningPrivateKeyVulnerable<T>(secretOrPrivateKey: T | Buffer) {
-  if (!checkWarningPrivateKeyVulnerable.warned && defaultPrivateKeyRS512 === secretOrPrivateKey) {
-    checkWarningPrivateKeyVulnerable.warned = true;
-    process.emitWarning(
-      'You are using a vulnerable private key.',
-      'JsonWebTokenControl#secretOrPrivateKey',
-    );
-  }
-  return secretOrPrivateKey;
 }
 
 export interface TokenDecoded {
@@ -94,7 +82,7 @@ export class JWTControl {
       secretOrPrivateKey: {
         enumerable: false,
         writable: false,
-        value: checkWarningPrivateKeyVulnerable(privateKey),
+        value: privateKey,
       },
     });
   }

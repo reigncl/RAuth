@@ -103,15 +103,23 @@ export class SessionControl {
   }
 
   async revokeSession(session: Required<Pick<Session, 'sessionId'>> & Session): Promise<boolean> {
-    return this.connectionStore.deleteById(session.sessionId);
+    if (session.sessionId) {
+      return this.connectionStore.deleteById(session.sessionId);
+    }
+
+    return false;
   }
 
   async revokeAllSessions(session: Required<Pick<Session, 'userId'>> & Session): Promise<boolean> {
-    return this.connectionStore.deleteByUserId(session.userId);
+    if (session.userId) {
+      return this.connectionStore.deleteByUserId(session.userId);
+    }
+
+    return false;
   }
 
   async getAllSessions(session: Required<Pick<Session, 'userId'>> & Session): Promise<Session[]> {
-    const registers = await this.connectionStore.findByUserId(session.userId);
+    const registers = session.userId ? await this.connectionStore.findByUserId(session.userId) : [];
 
     return registers.map(
       register =>
