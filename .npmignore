@@ -11,3 +11,4 @@ tsconfig.json
 tslint.json
 *.tgz
 commitlint.config.js
+.editorconfig

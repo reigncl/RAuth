@@ -79,6 +79,8 @@ export class SQLiteEngine implements Engine {
   }
 
   async update(register: Register, sets: any): Promise<Register> {
+    if (!register.sessionId) return register;
+
     const db = await this.sqlite;
 
     ow(sets.refreshAt, 'sets.refreshAt', ow.number);
@@ -119,7 +121,7 @@ export class SQLiteEngine implements Engine {
   async findByUserId(userId: string): Promise<Register[]> {
     const db = await this.sqlite;
 
-    const results:RegisterRow[] = await db.all<RegisterRow>(
+    const results: RegisterRow[] = await db.all<RegisterRow>(
       `SELECT * FROM ${this.table} WHERE userId = $userId;`,
       { $userId: userId },
     );

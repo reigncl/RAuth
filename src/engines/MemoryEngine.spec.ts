@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import uuid = require('uuid');
-import { StrictSessionRegister } from '../../session/Session';
-import { MemoryEngine } from '../../engines/MemoryEngine';
+import { StrictSessionRegister } from '../session/Session';
+import { MemoryEngine } from './MemoryEngine';
 
 let engine: MemoryEngine;
 

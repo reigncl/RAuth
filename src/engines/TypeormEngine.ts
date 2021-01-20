@@ -34,6 +34,8 @@ export class TypeormEngine implements Engine {
   }
 
   async update(register: Register, sets: any): Promise<Register> {
+    if (!register.sessionId) return register;
+
     await this.entity.createQueryBuilder().update().set(sets).execute();
 
     return this.findById(register.sessionId);

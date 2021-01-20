@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import ow from 'ow';
-import '../../engines/MemoryEngine';
-import { SessionControl } from '../../session/SessionControl';
+import '../engines/MemoryEngine';
+import { SessionControl } from './SessionControl';
 import jsonwebtoken from 'jsonwebtoken';
 
 chai.use(chaiAsPromised);

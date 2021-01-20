@@ -1,10 +1,11 @@
 import { EventEmitter } from 'events';
-import { VerifyOptions } from 'jsonwebtoken';
+import { SignOptions, VerifyOptions } from 'jsonwebtoken';
 import uuid from 'uuid';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { RAuthError } from '../util/Error';
 import { JWTControl, JWTControlOption } from './JWTControl';
 import { AccessToken, Data, RefreshToken, Scope, Session, UserID } from './Session';
+import '../engines/MemoryEngine';
 
 type eventsNames = 'create-session' | 'refresh-session';
 
@@ -18,28 +19,13 @@ interface SessionControlOptions {
 }
 
 export class SessionControl {
-  jwtControl: JWTControl;
-  connectionStore: ConnectionStore;
-  accessTokenExpires: string | number;
-  refreshTokenExpires: string | number;
-  events = new EventEmitter();
+  constructor(private opts?: SessionControlOptions) { }
 
-  constructor({
-    jwtControl = new JWTControl(),
-    engineConnectionStore = '<<NO_SET>>',
-    connectionStore = new ConnectionStore(engineConnectionStore),
-    accessTokenExpires = '1h',
-    refreshTokenExpires = '4w',
-  }: SessionControlOptions = {}) {
-    if (jwtControl instanceof JWTControl) {
-      this.jwtControl = jwtControl;
-    } else {
-      this.jwtControl = new JWTControl(jwtControl);
-    }
-    this.connectionStore = connectionStore;
-    this.accessTokenExpires = accessTokenExpires;
-    this.refreshTokenExpires = refreshTokenExpires;
-  }
+  readonly jwtControl: JWTControl = this.opts?.jwtControl instanceof JWTControl ? this.opts.jwtControl : new JWTControl(this.opts?.jwtControl);
+  readonly connectionStore: ConnectionStore = this.opts?.connectionStore ?? new ConnectionStore(this.opts?.engineConnectionStore ?? 'Memory');
+  readonly accessTokenExpires: string | number = this.opts?.accessTokenExpires ?? '1h';
+  readonly refreshTokenExpires: string | number = this.opts?.refreshTokenExpires ?? '4w';
+  readonly events = new EventEmitter();
 
   async verify(accessToken: AccessToken, options?: VerifyOptions): Promise<Session> {
     return Session.from(
@@ -76,6 +62,25 @@ export class SessionControl {
     return Session.from(register, this);
   }
 
+  async createUnregisterSession(
+    userId: string,
+    scope: string,
+    data?: Data,
+    signOptions?: SignOptions,
+  ) {
+    const session = Session.from(
+      {
+        scope,
+        data,
+        userId: userId.toString(),
+        sessionId: uuid(),
+      },
+      this,
+    );
+
+    return session;
+  }
+
   async refreshSession(refreshToken: RefreshToken, options?: { data?: Data }): Promise<Session> {
     const tokenDecoded = this.jwtControl.verify(refreshToken, {
       subject: 'refresh_token',
@@ -84,7 +89,7 @@ export class SessionControl {
     const register = await this.connectionStore.findById(tokenDecoded.sessionId);
 
     if (!register) {
-      throw new RAuthError('Not found Register');
+      throw new RAuthError('Not found Session');
     }
 
     if (tokenDecoded.refreshAt.toString() !== register.refreshAt.toString()) {

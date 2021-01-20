@@ -171,3 +171,4 @@ util/
 *.js*
 !src/**/*
 !.github
+!.editorconfig

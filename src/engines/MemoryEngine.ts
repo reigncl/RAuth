@@ -38,6 +38,8 @@ export class MemoryEngine implements Engine {
   }
 
   async update(register: Register, sets: any): Promise<Register> {
+    if (!register.sessionId) return register;
+
     const registerValue: Register = <Register>this.memory.get(register.sessionId);
 
     this.memory.set(register.sessionId, {
