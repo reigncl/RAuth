@@ -4,10 +4,15 @@ import uuid from 'uuid';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { RAuthError } from '../util/Error';
 import { JWTControl, JWTControlOption } from './JWTControl';
-import { AccessToken, Data, RefreshToken, Scope, Session, UserID } from './Session';
+import { AccessToken, Data, RefreshToken, Scope, Session, SessionBodyFrom, UserID } from './Session';
 import '../engines/MemoryEngine';
+import { Register } from '../store/Register';
 
-type eventsNames = 'create-session' | 'refresh-session';
+type eventsNames = {
+  'create-session': [opt: { register: Register }]
+  'refresh-session': [register: Register]
+  'create-unregister-session': [opt: { session: Session }]
+};
 
 interface SessionControlOptions {
   jwtControl?: JWTControl | JWTControlOption;
@@ -16,6 +21,30 @@ interface SessionControlOptions {
   accessTokenExpires?: string | number;
   refreshTokenExpires?: string | number;
   [otherOpt: string]: any;
+}
+
+type CreateSessionOptions =
+  | [
+    userId: UserID,
+    scope?: Scope,
+    data?: Data,
+    moreData?: any,
+  ]
+  | [sessionBodyFrom: SessionBodyFrom]
+
+const createSessionOptionsToBodySession = (opts: CreateSessionOptions): SessionBodyFrom => {
+  if (typeof opts[0] === 'string') {
+    const [userId, scope, data, moreData] = opts;
+    return { userId, scope, data, moreData };
+  }
+
+  if (typeof opts[0] === 'object') {
+    const [sessionBodyFrom] = opts;
+
+    return sessionBodyFrom;
+  }
+
+  throw new Error('Parameters invalid');
 }
 
 export class SessionControl {
@@ -40,44 +69,31 @@ export class SessionControl {
     );
   }
 
-  async createSession(
-    userId: UserID,
-    scope: Scope = '',
-    data?: Data,
-    moreData?: any,
-  ): Promise<Session> {
-    const register = await this.connectionStore.create({
-      userId,
-      scope,
+  async createSession(...opts: CreateSessionOptions): Promise<Session> {
+    const bodySession = createSessionOptionsToBodySession(opts);
+    const session = Session.from({
       sessionId: uuid(),
-      createdAt: Date.now(),
-      refreshAt: Date.now(),
-      ...moreData,
-    });
+      ...bodySession,
+      createdAt: bodySession.createdAt ?? Date.now(),
+      refreshAt: bodySession.refreshAt ?? Date.now(),
+    }, this);
 
-    register.data = data;
+    const register = await this.connectionStore.create(session.getRegister());
 
     this.emit('create-session', { register });
 
     return Session.from(register, this);
   }
 
-  async createUnregisterSession(
-    userId: string,
-    scope: string,
-    data?: Data,
-    signOptions?: SignOptions,
-  ) {
-    const session = Session.from(
-      {
-        scope,
-        data,
-        userId: userId.toString(),
-        sessionId: uuid(),
-      },
-      this,
-    );
-
+  async createUnregisterSession(...opts: CreateSessionOptions) {
+    const bodySession = createSessionOptionsToBodySession(opts);
+    const session = Session.from({
+      sessionId: uuid(),
+      mode: 'OnlyAccessToken',
+      ...bodySession,
+      createdAt: bodySession.createdAt ?? Date.now(),
+    }, this);
+    this.emit('create-unregister-session', { session });
     return session;
   }
 
@@ -92,7 +108,7 @@ export class SessionControl {
       throw new RAuthError('Not found Session');
     }
 
-    if (tokenDecoded.refreshAt.toString() !== register.refreshAt.toString()) {
+    if (tokenDecoded.refreshAt.toString() !== register.refreshAt?.toString()) {
       throw new RAuthError('Token is not valid');
     }
 
@@ -132,11 +148,11 @@ export class SessionControl {
     );
   }
 
-  emit(event: eventsNames, ...args: any[]) {
+  emit<T extends keyof eventsNames>(event: T, ...args: eventsNames[T]) {
     return this.events.emit(event, ...args);
   }
 
-  on(event: eventsNames, listener: (...args: any[]) => void) {
-    return this.events.on(event, listener);
+  on<T extends keyof eventsNames>(event: T, listener: (...args: eventsNames[T]) => void) {
+    return this.events.on(event, listener as any);
   }
 }

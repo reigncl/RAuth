@@ -2,6 +2,7 @@ import ow from 'ow';
 import { SessionControl } from './SessionControl';
 import { JWTControl } from './JWTControl';
 import ms from 'ms';
+import { SignOptions } from 'jsonwebtoken';
 
 export type Mode = 'OnlyAccessToken' | 'Token';
 type RT<T extends Mode> = T extends 'OnlyAccessToken' ? undefined : string
@@ -19,13 +20,14 @@ export interface SessionRegister {
   scope?: Scope;
   clientId?: string;
   sessionId?: SessionId;
-  data?: Data;
+  // data?: Data;
   meta?: Meta;
-
-  iat?: number;
-  exp?: number;
+  createdAt?: number;
+  refreshAt?: number;
   [prop: string]: any;
 }
+
+export type SessionBodyFrom = StrictSessionRegister & Pick<OptionSession, 'mode' | 'accessTokenSignOptions' | 'refreshTokenSignOptions'>
 
 type propRequired = 'sessionId' | 'userId' | 'scope';
 export type StrictSessionRegister = SessionRegister;
@@ -51,14 +53,16 @@ interface OptionSession {
   readonly mode?: Mode;
   readonly refreshAt?: number;
   readonly createdAt?: number;
+  readonly accessTokenSignOptions?: SignOptions;
+  readonly refreshTokenSignOptions?: SignOptions;
 }
 
 export class Session<M extends Mode = 'Token'> implements SessionRegister {
   static from(
-    { userId, scope, sessionId, data, meta, clientId, mode, refreshAt, createdAt, ...otherDataSession }: StrictSessionRegister & Pick<OptionSession, 'mode'>,
+    { userId, scope, sessionId, data, meta, clientId, mode, refreshAt, createdAt, accessTokenSignOptions, refreshTokenSignOptions, ...otherDataSession }: SessionBodyFrom,
     sessionControl: SessionControl,
   ): Session {
-    return new Session({ userId, scope, sessionId, data, meta, clientId, mode, sessionControl, otherDataSession, refreshAt, createdAt });
+    return new Session({ userId, scope, sessionId, data, meta, clientId, mode, sessionControl, otherDataSession, refreshAt, createdAt, accessTokenSignOptions, refreshTokenSignOptions });
   }
 
   private constructor(private readonly options?: OptionSession) { }
@@ -67,7 +71,7 @@ export class Session<M extends Mode = 'Token'> implements SessionRegister {
   readonly createdAt = this.options?.createdAt;
   readonly sessionControl = this.options?.sessionControl;
   readonly jwtControl = this.options?.sessionControl?.jwtControl ?? new JWTControl();
-  readonly userId = this.options?.userId;
+  readonly userId = this.options?.userId?.toString();
   readonly scope = scopeToString(this.options?.scope);
   readonly sessionId = this.options?.sessionId;
   readonly clientId = this.options?.clientId;
@@ -75,8 +79,23 @@ export class Session<M extends Mode = 'Token'> implements SessionRegister {
   readonly meta = this.options?.meta;
   readonly otherDataSession = this.options?.otherDataSession;
   readonly mode = this.options?.mode ?? 'Token';
-  readonly accessTokenExpires = msToSec(this.sessionControl?.accessTokenExpires ?? '1h');
-  readonly refreshTokenExpires = msToSec(this.sessionControl?.refreshTokenExpires ?? '4w');
+  readonly accessTokenSignOptions = this.options?.accessTokenSignOptions;
+  readonly refreshTokenSignOptions = this.options?.refreshTokenSignOptions;
+  readonly accessTokenExpires = msToSec(this.accessTokenSignOptions?.expiresIn ?? this.sessionControl?.accessTokenExpires ?? '1h');
+  readonly refreshTokenExpires = msToSec(this.refreshTokenSignOptions?.expiresIn ?? this.sessionControl?.refreshTokenExpires ?? '4w');
+
+  getRegister(): SessionRegister {
+    return {
+      userId: this.userId,
+      clientId: this.clientId,
+      createdAt: this.createdAt,
+      meta: this.meta,
+      refreshAt: this.refreshAt,
+      scope: this.scope,
+      sessionId: this.sessionId,
+      ...this.otherDataSession,
+    }
+  }
 
   get refreshToken() {
     if (this.mode === 'OnlyAccessToken') return undefined as RT<M>;
@@ -91,6 +110,7 @@ export class Session<M extends Mode = 'Token'> implements SessionRegister {
       },
       {
         subject: 'refresh_token',
+        ...this.refreshTokenSignOptions,
         expiresIn: this.refreshTokenExpires,
       },
     ) as RT<M>;
@@ -109,6 +129,7 @@ export class Session<M extends Mode = 'Token'> implements SessionRegister {
       },
       {
         subject: 'access_token',
+        ...this.accessTokenSignOptions,
         expiresIn: this.accessTokenExpires,
       },
     );

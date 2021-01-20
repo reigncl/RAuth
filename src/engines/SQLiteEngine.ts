@@ -12,10 +12,10 @@ interface RegisterRow {
   id: number;
   sessionId: string;
   userId: string;
-  createdAt: number;
   scope: string;
-  data: string;
-  refreshAt: string;
+  meta: string;
+  createdAt: number;
+  refreshAt: number;
 }
 
 declare global {
@@ -40,10 +40,10 @@ export class SQLiteEngine implements Engine {
           id INT PRIMARY KEY,
           sessionId TEXT UNIQUE,
           userId TEXT,
-          createdAt SMALLDATETIME,
+          createdAt INTEGER,
           scope TEXT,
-          data TEXT,
-          refreshAt SMALLDATETIME
+          meta TEXT,
+          refreshAt INTEGER
         );`);
 
         return db;
@@ -127,10 +127,10 @@ export class SQLiteEngine implements Engine {
     );
 
     return results.map((result) => {
-      const { data, ...res } = result;
+      const { meta, ...res } = result;
       return {
         ...res,
-        data: JSON.parse(data),
+        meta: meta ? JSON.parse(meta) : undefined,
       };
     });
   }
