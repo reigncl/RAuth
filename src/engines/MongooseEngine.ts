@@ -1,5 +1,4 @@
 import { Document, Model } from 'mongoose';
-import { StrictSessionRegister } from '../session/Session';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { Engine } from '../store/Engine';
 import { Register } from '../store/Register';
@@ -57,7 +56,7 @@ export class MongooseEngine implements Engine {
     return <any>this.model.find({ userId }).lean();
   }
 
-  async create(sessionRegister: StrictSessionRegister): Promise<Register> {
+  async create(sessionRegister: Register): Promise<Register> {
     const doc = await this.model.create(sessionRegister);
     return <any>doc.toJSON();
   }

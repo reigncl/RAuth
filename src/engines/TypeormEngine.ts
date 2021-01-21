@@ -1,6 +1,5 @@
 // @ts-ignore
 import { BaseEntity } from 'typeorm';
-import { StrictSessionRegister } from '../session/Session';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { Engine } from '../store/Engine';
 import { Register } from '../store/Register';
@@ -53,7 +52,7 @@ export class TypeormEngine implements Engine {
     });
   }
 
-  async create(sessionRegister: StrictSessionRegister): Promise<Register> {
+  async create(sessionRegister: Register): Promise<Register> {
     const register = Object.assign(new this.entity, sessionRegister);
 
     await register.save();

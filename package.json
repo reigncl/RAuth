@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "lint": "tslint -c tslint.json --project tsconfig.json",
     "test": "nyc --reporter=html mocha -c -r ts-node/register --recursive src/**/*.spec.ts --reporter=list --exit",
     "test:watch": "nodemon --exec nyc --reporter=html mocha -c -r ts-node/register --recursive src/**/*.spec.ts --reporter=list --exit",
@@ -56,5 +57,9 @@
   "peerDependencies": {
     "sqlite": "^3.0.3",
     "typeorm": "^0.2.16"
+  },
+  "optionalDependencies": {
+    "sqlite": "^4.0.19",
+    "sqlite3": "^5.0.1"
   }
 }

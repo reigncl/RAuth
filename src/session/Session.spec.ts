@@ -9,8 +9,7 @@ describe('Session', () => {
       userId: 'userid',
       scope: 'profile',
       clientId: 'asd',
-      asd: '3',
-    }, new SessionControl());
+    });
 
     expect(session.accessToken).to.be.a('string')
     expect(session.refreshToken).to.be.a('string')
@@ -21,9 +20,8 @@ describe('Session', () => {
       userId: 'userid',
       scope: 'profile',
       clientId: 'asd',
-      asd: '3',
       mode: 'OnlyAccessToken',
-    }, new SessionControl());
+    });
 
     expect(session.accessToken).to.be.a('string');
     expect(session.refreshToken).to.be.undefined;

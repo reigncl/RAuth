@@ -1,7 +1,6 @@
 import { Engine } from '../store/Engine';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { Register } from '../store/Register';
-import { StrictSessionRegister } from '../session/Session';
 import uuid = require('uuid');
 
 declare global {
@@ -11,11 +10,9 @@ declare global {
 }
 
 export class MemoryEngine implements Engine {
-  private memory: Map<string, Register>;
+  private memory: Map<string, Register> = new Map();;
 
-  constructor(option?: any) {
-    this.memory = new Map();
-  }
+  constructor(private readonly option?: any) { }
 
   async deleteById(sessionId: string): Promise<boolean> {
     return this.memory.delete(sessionId);
@@ -51,14 +48,16 @@ export class MemoryEngine implements Engine {
   }
 
   async findById(sessionId: string): Promise<Register> {
-    return <Register>this.memory.get(sessionId);
+    const reg = this.memory.get(sessionId);
+    if (!reg) throw new Error(`Cannot found ${sessionId}`);
+    return reg;
   }
 
   async findByUserId(userId: string): Promise<Register[]> {
     return [...this.memory.values()].filter(register => register.userId === userId);
   }
 
-  async create(sessionRegister: StrictSessionRegister): Promise<Register> {
+  async create(sessionRegister: Register): Promise<Register> {
     const sessionId = sessionRegister.sessionId || uuid();
     this.memory.set(sessionId, {
       sessionId,

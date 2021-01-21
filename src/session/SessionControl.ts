@@ -1,16 +1,16 @@
 import { EventEmitter } from 'events';
-import { SignOptions, VerifyOptions } from 'jsonwebtoken';
+import { VerifyOptions } from 'jsonwebtoken';
 import uuid from 'uuid';
 import { ConnectionStore } from '../store/ConnectionStore';
 import { RAuthError } from '../util/Error';
 import { JWTControl, JWTControlOption } from './JWTControl';
-import { AccessToken, Data, RefreshToken, Scope, Session, SessionBodyFrom, UserID } from './Session';
+import { AccessToken, Data, OptionSession, RefreshToken, Session } from './Session';
 import '../engines/MemoryEngine';
 import { Register } from '../store/Register';
 
 type eventsNames = {
   'create-session': [opt: { register: Register }]
-  'refresh-session': [register: Register]
+  'refresh-session': [opt: { register: Register }]
   'create-unregister-session': [opt: { session: Session }]
 };
 
@@ -23,29 +23,7 @@ interface SessionControlOptions {
   [otherOpt: string]: any;
 }
 
-type CreateSessionOptions =
-  | [
-    userId: UserID,
-    scope?: Scope,
-    data?: Data,
-    moreData?: any,
-  ]
-  | [sessionBodyFrom: SessionBodyFrom]
-
-const createSessionOptionsToBodySession = (opts: CreateSessionOptions): SessionBodyFrom => {
-  if (typeof opts[0] === 'string') {
-    const [userId, scope, data, moreData] = opts;
-    return { userId, scope, data, moreData };
-  }
-
-  if (typeof opts[0] === 'object') {
-    const [sessionBodyFrom] = opts;
-
-    return sessionBodyFrom;
-  }
-
-  throw new Error('Parameters invalid');
-}
+type OptionsVerify = VerifyOptions & { completeMeta?: boolean }
 
 export class SessionControl {
   constructor(private opts?: SessionControlOptions) { }
@@ -56,71 +34,88 @@ export class SessionControl {
   readonly refreshTokenExpires: string | number = this.opts?.refreshTokenExpires ?? '4w';
   readonly events = new EventEmitter();
 
-  async verify(accessToken: AccessToken, options?: VerifyOptions): Promise<Session> {
-    return Session.from(
-      this.jwtControl.verify(
-        accessToken,
-        {
-          subject: 'access_token',
-          ...options,
-        },
-      ),
-      this,
+  async verify(strToken: string, options?: OptionsVerify) {
+    const { completeMeta, ...verifyOptions } = options ?? {};
+    const decode = this.jwtControl.verify(
+      strToken,
+      verifyOptions,
     );
+    return Session.from({
+      ...decode,
+      meta: completeMeta && decode.sessionId ? await (await this.readRegister(decode.sessionId)).meta : undefined,
+      sessionControl: this,
+    });
   }
 
-  async createSession(...opts: CreateSessionOptions): Promise<Session> {
-    const bodySession = createSessionOptionsToBodySession(opts);
+  async verifyAccessToken(accessToken: AccessToken, options?: OptionsVerify) {
+    return this.verify(accessToken, { ...options, subject: 'access_token' });
+  }
+
+  async verifyRefreshToken(refresh_token: RefreshToken, options?: OptionsVerify) {
+    return this.verify(refresh_token, { ...options, subject: 'refresh_token' });
+  }
+
+  async readRegister(sessionId: Session['sessionId']) {
+    if (!sessionId) throw new Error('refresh token no valid require sessionId');
+
+    return await this.connectionStore.findById(sessionId);
+  }
+
+  async createSession(bodySession?: OptionSession) {
     const session = Session.from({
       sessionId: uuid(),
       ...bodySession,
-      createdAt: bodySession.createdAt ?? Date.now(),
-      refreshAt: bodySession.refreshAt ?? Date.now(),
-    }, this);
+      createdAt: bodySession?.createdAt ?? Date.now(),
+      refreshAt: bodySession?.refreshAt ?? Date.now(),
+      sessionControl: this,
+    });
 
     const register = await this.connectionStore.create(session.getRegister());
 
     this.emit('create-session', { register });
 
-    return Session.from(register, this);
+    return session;
   }
 
-  async createUnregisterSession(...opts: CreateSessionOptions) {
-    const bodySession = createSessionOptionsToBodySession(opts);
+  async createUnregisterSession(bodySession?: OptionSession) {
     const session = Session.from({
       sessionId: uuid(),
       mode: 'OnlyAccessToken',
       ...bodySession,
-      createdAt: bodySession.createdAt ?? Date.now(),
-    }, this);
+      createdAt: bodySession?.createdAt ?? Date.now(),
+      sessionControl: this,
+    });
     this.emit('create-unregister-session', { session });
     return session;
   }
 
-  async refreshSession(refreshToken: RefreshToken, options?: { data?: Data }): Promise<Session> {
-    const tokenDecoded = this.jwtControl.verify(refreshToken, {
-      subject: 'refresh_token',
-    });
+  async refreshSession(refreshToken: RefreshToken, optionSession?: Pick<OptionSession, 'data'> & { meta?: OptionSession['meta'] | ((meta: OptionSession['meta']) => OptionSession['meta']) }): Promise<Session> {
+    const session = await this.verifyRefreshToken(refreshToken);
 
-    const register = await this.connectionStore.findById(tokenDecoded.sessionId);
+    if (!session.sessionId) throw new Error('refresh token no valid require sessionId');
 
-    if (!register) {
-      throw new RAuthError('Not found Session');
-    }
+    const register = await this.readRegister(session.sessionId);
 
-    if (tokenDecoded.refreshAt.toString() !== register.refreshAt?.toString()) {
+    if (session.refreshAt?.toString() !== register.refreshAt?.toString()) {
       throw new RAuthError('Token is not valid');
     }
 
     const nextRegister = await this.connectionStore.update(register, {
       refreshAt: Date.now(),
+      meta: typeof optionSession?.meta === 'function'
+        ? optionSession.meta(register?.meta)
+        : {
+          ...register?.meta,
+          ...optionSession?.meta,
+        },
     });
-
-    nextRegister.data = options?.data;
 
     this.emit('refresh-session', { register: nextRegister });
 
-    return Session.from(nextRegister, this);
+    return Session.from({
+      ...nextRegister,
+      data: optionSession?.data,
+    });
   }
 
   async revokeSession(session: Required<Pick<Session, 'sessionId'>> & Session): Promise<boolean> {
@@ -144,7 +139,7 @@ export class SessionControl {
 
     return registers.map(
       register =>
-        Session.from(register, this),
+        Session.from(register),
     );
   }
 
