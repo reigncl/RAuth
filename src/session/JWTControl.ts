@@ -55,7 +55,7 @@ export interface JWTControlOption {
 export class JWTControl {
   constructor(private opts?: JWTControlOption) { }
 
-  readonly algorithm = this.opts?.algorithm ?? this.opts?.secret ? 'HS512' : 'RS512';
+  readonly algorithm = this.opts?.algorithm ?? (this.opts?.secret ? 'HS512' : 'RS512');
   readonly signOptions: SignOptions = {
     algorithm: this.algorithm,
     ...this.opts?.signOptions,
