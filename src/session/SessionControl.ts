@@ -115,6 +115,7 @@ export class SessionControl {
     return Session.from({
       ...nextRegister,
       data: optionSession?.data,
+      sessionControl: this,
     });
   }
 
