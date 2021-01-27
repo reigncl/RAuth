@@ -1,6 +1,6 @@
 {
   "name": "rauth",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Authentication and Authorization library via JWT",
   "publishConfig": {
     "tag": "beta",
