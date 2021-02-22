@@ -1,10 +1,10 @@
 
-name: NPM Publish Package
+name: NPM Publish Package Rauth Core
 
 on:
   push:
     tags:
-      - "v*"
+      - "rauth@*"
 
 jobs:
   publish:
@@ -13,10 +13,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: autorize on npm
+        working-directory: packages/rauth
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
       - name: install
+        working-directory: packages/rauth
         run: npm ci
       - name: publish on npm
+        working-directory: packages/rauth
         run: npm publish

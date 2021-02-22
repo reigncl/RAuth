@@ -172,3 +172,8 @@ util/
 !src/**/*
 !.github
 !.editorconfig
+!package.json
+!package-lock.json
+!tsconfig.json
+!tslint.json
+!.nycrc
