@@ -1,11 +1,11 @@
 {
   "name": "rauth-core",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "publishConfig": {
     "access": "public",
-    "tag": "beta"
+    "tag": "latest"
   },
   "scripts": {
     "prepare": "tsc"
