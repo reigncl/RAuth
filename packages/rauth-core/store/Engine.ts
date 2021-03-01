@@ -14,5 +14,6 @@ export declare class Engine {
   findById(sessionId: string): Promise<Register>;
   findByUserId(userId: string): Promise<Register[]>;
   create(sessionRegister: Register): Promise<Register>;
+  static initialize?<T extends Engine>(): Promise<T>;
   [property: string]: any;
 }
