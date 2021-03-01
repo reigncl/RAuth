@@ -1,0 +1,25 @@
+
+name: NPM Publish Package RAuth Engine SQLite
+
+on:
+  push:
+    tags:
+      - "rauth-engine-sqlite@*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: autorize on npm
+        working-directory: packages/rauth-engine-sqlite
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - name: install
+        working-directory: packages/rauth-engine-sqlite
+        run: npm ci
+      - name: publish on npm
+        working-directory: packages/rauth-engine-sqlite
+        run: npm publish

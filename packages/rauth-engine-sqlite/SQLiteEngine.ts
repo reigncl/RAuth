@@ -63,6 +63,7 @@ const preparePropsSQL = <O>(obj: O) => {
   let vls: { [k in B]?: any } = {};
   Object.entries(obj).forEach(([k, v]) => {
     fls.push(k);
+    // @ts-ignore
     vls[`$${k}`] = v;
   });
   return {

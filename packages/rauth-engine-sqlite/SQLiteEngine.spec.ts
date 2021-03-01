@@ -6,7 +6,9 @@ const sqlEngine = new class {
   inst?: SQLiteEngine;
 
   async clear() {
-    await (await this.inst?.sqlite).close();
+    const inst = this.inst;
+    if (!inst) throw new Error('Not initialized instance SQLiteEngine');
+    await (await inst.sqlite).close();
     unlinkSync(this.filename());
     this.inst = undefined;
   }
@@ -72,6 +74,8 @@ describe('SQL Lite Engine', () => {
     const reg = await sqliteEngine.create({
       clientId: 'clientId123123',
     });
+
+    if (!reg.sessionId) throw new Error('Is not found session id');
 
     const r = await sqliteEngine.deleteById(reg.sessionId);
 

@@ -1,0 +1,8 @@
+jest.config.js
+*.spec.js
+*.spec.ts
+.vscode
+*.tgz
+*.ts
+!*.d.ts
+*.spec.d.ts
