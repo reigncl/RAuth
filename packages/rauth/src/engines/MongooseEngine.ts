@@ -1,7 +1,7 @@
 import { Document, Model } from 'mongoose';
-import { ConnectionStore } from '../store/ConnectionStore';
-import { Engine } from '../store/Engine';
-import { Register } from '../store/Register';
+import { ConnectionStore } from 'rauth-core/store/ConnectionStore';
+import { Engine } from 'rauth-core/store/Engine';
+import { Register } from 'rauth-core/store/Register';
 
 declare global {
   interface EngineNames {

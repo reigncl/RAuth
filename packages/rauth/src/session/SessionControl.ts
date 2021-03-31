@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 import { VerifyOptions } from 'jsonwebtoken';
 import uuid from 'uuid';
-import { ConnectionStore } from '../store/ConnectionStore';
-import { RAuthError } from '../util/Error';
+import { ConnectionStore } from 'rauth-core/store/ConnectionStore';
+import { RAuthError } from 'rauth-core/util/Error';
 import { JWTControl, JWTControlOption } from './JWTControl';
 import { AccessToken, Data, OptionSession, RefreshToken, Session } from './Session';
 import '../engines/MemoryEngine';
-import { Register } from '../store/Register';
+import { Register } from 'rauth-core/store/Register';
 
 type eventsNames = {
   'create-session': [opt: { register: Register }]

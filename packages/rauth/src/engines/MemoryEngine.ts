@@ -1,7 +1,7 @@
-import { Engine } from '../store/Engine';
-import { ConnectionStore } from '../store/ConnectionStore';
-import { Register } from '../store/Register';
-import uuid = require('uuid');
+import { Engine } from 'rauth-core/store/Engine';
+import { ConnectionStore } from 'rauth-core/store/ConnectionStore';
+import { Register } from 'rauth-core/store/Register';
+import { v4 as uuid } from 'uuid';
 
 declare global {
   interface EngineNames {

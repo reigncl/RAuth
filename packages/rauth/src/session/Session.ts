@@ -3,7 +3,7 @@ import { SessionControl } from './SessionControl';
 import { JWTControl } from './JWTControl';
 import ms from 'ms';
 import { SignOptions } from 'jsonwebtoken';
-import { Register } from '../store/Register';
+import { Register } from 'rauth-core/store/Register';
 
 export type Mode = 'OnlyAccessToken' | 'Token';
 type RT<T extends Mode> = T extends 'OnlyAccessToken' ? undefined : string
